@@ -74,9 +74,72 @@ static const int GRID_COLUMNS = 10;
 {
     int row = location.y / _cellHeight;
     int col = location.x / _cellWidth;
-    NSLog(@"_cellWidth = %f", _cellWidth);
-    NSLog(@"location.x is %f, however the column is %d", location.x, col);
     return _gridArray[row][col];
+}
+
+-(void)evolveStep
+{
+    [self countNeighbors];
+    
+    [self updateCreatures];
+    
+    _generation++;
+}
+
+-(void)countNeighbors
+{
+    for (int i =0; i < [_gridArray count]; i++) {
+        
+        for (int j = 0; j < [_gridArray[i] count]; j++) {
+            
+            Creature *currentCreature = _gridArray[i][j];
+            
+            currentCreature.livingNeighbors = 0;
+            
+            
+            for (int x = (i-1); x<= (i+1); x++) {
+                
+                for (int y = (j-1); y <= (j+1); y++) {
+                    BOOL isIndexValid;
+                    isIndexValid = [self isIndexValidForX:x andY:y];
+                    
+                    if (!((x == i) && (y == j)) && isIndexValid) {
+                        Creature *neighbor = _gridArray[x][y];
+                        if (neighbor.isAlive) {
+                            currentCreature.livingNeighbors += 1;
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+}
+
+-(BOOL)isIndexValidForX:(int)x andY:(int)y {
+    if (x < 0 || y < 0 || x >= GRID_ROWS || y >= GRID_COLUMNS) {
+        return NO;
+    }
+    return YES;
+}
+
+-(void)updateCreatures
+{
+    for (int i = 0; i < [_gridArray count]; i++) {
+        
+        for (int j = 0; j < [_gridArray[i] count]; j++) {
+            
+            Creature *creature = _gridArray[i][j];
+            
+            if (creature.livingNeighbors == 3) {
+                [creature setIsAlive:YES];
+            } else {
+                if (creature.livingNeighbors <= 1 || creature.livingNeighbors >= 4) {
+                    [creature setIsAlive:NO];
+                }
+            }
+        }
+    }
 }
 
 
