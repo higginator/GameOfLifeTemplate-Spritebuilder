@@ -61,6 +61,22 @@ static const int GRID_COLUMNS = 10;
     
 }
 
+-(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event
+{
+    CGPoint location = [touch locationInNode:self];
+    Creature *creature = [self creatureForTouchPosition:location];
+    
+    creature.isAlive = !creature.isAlive;
+    
+}
+
+-(Creature *)creatureForTouchPosition:(CGPoint)location
+{
+    int row = location.y / _cellHeight;
+    int col = location.x / _cellWidth;
+    return _gridArray[row][col];
+}
+
 
 
 @end
