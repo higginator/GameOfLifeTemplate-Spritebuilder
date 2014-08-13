@@ -74,6 +74,7 @@ static const int GRID_COLUMNS = 10;
 {
     int row = location.y / _cellHeight;
     int col = location.x / _cellWidth;
+    NSLog(@"_cellWidth = %f", _cellWidth);
     NSLog(@"location.x is %f, however the column is %d", location.x, col);
     return _gridArray[row][col];
 }
